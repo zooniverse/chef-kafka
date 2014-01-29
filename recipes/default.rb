@@ -6,7 +6,9 @@
 # 
 # All rights reserved - Do Not Redistribute
 
-include_recipe "zookeeper::zookeeper"
+if node['kafka']['zookeeper_host'] == 'localhost'
+  include_recipe "kafka::zookeeper"
+end
 
 kafka_name = "kafka-#{node['kafka']['version']}"
 
@@ -45,27 +47,22 @@ unless ::File.exist?("#{node['kafka']['install_directory']}/#{kafka_name}")
   end
 end
 
-template "#{node['zookeeper']['install_dir']}/zookeeper-#{node['zookeeper']['version']}/conf/zoo.cfg" do
-  source "zoo.cfg.erb"
-  owner node['zookeeper']['user']
-  group node['zookeeper']['user']
-  mode '0755'
-  action :create
-end
-
 node['kafka']['number_of_brokers'].times do |n|
   vars = {
     n: n,
     user: node['kafka']['user'],
     group: node['kafka']['group'],
     install_directory: node['kafka']['install_directory'],
-    version: node['kafka']['version']
+    version: node['kafka']['version'],
+    local_zoo: node['kafka']['zookeeper_host'] == 'localhost',
+    zookeeper_host: node['kafka']['zookeeper_host'],
+    zookeeper_port: node['kafka']['zookeeper_port']
   }
 
   template "#{node['kafka']['install_directory']}/#{kafka_name}/config/server-#{n}.properties" do
     source "server.properties.erb"
-    owner "kafka"
-    group "kafka"
+    owner node['kafka']['user']
+    group node['kafka']['group']
     mode "0755"
     variables vars
     action :create
@@ -82,20 +79,10 @@ node['kafka']['number_of_brokers'].times do |n|
  service "kafka-#{n}" do
     provider Chef::Provider::Service::Upstart
     supports start: true, restart: true
-    action :enable
+    if node['kafka']['zookeeper_host'] == 'localhost'
+      action [:enable, :start]
+    else
+      action :enable
+    end
   end
-
-end
-
-template "/etc/init/zookeeper.conf" do 
-  source "zookeeper.upstart.conf.erb"
-  owner "root"
-  group "root"
-  mode "0644"
-end
-
-service "zookeeper" do
-  provider Chef::Provider::Service::Upstart
-  supports start: true, restart: true, status: true
-  action [:enable, :start]
 end

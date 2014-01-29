@@ -2,8 +2,8 @@ description "Kafka"
 
 limit nofile 32768 32768
 
-start on started zookeeper
-stop on stopped zookeeper
+start on <% if @local_zoo %>started zookeeper<% else %>[2345]<% end %>
+stop on <% if @local_zoo %>stopped zookeeper<% else %>[!12345]<% end %>
 
 respawn
 respawn limit 2 5

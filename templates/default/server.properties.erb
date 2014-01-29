@@ -102,4 +102,4 @@ log.cleanup.interval.mins=1
 # server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
 # You can also append an optional chroot string to the urls to specify the
 # root directory for all kafka znodes.
-zookeeper.connect=localhost:2181
+zookeeper.connect=<%= @zookeeper_host %>:<%= @zookeeper_port %>
