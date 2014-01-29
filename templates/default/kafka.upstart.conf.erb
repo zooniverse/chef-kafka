@@ -1,0 +1,18 @@
+description "Kafka"
+
+limit nofile 32768 32768
+
+start on started zookeeper
+stop on stopped zookeeper
+
+respawn
+respawn limit 2 5
+
+umask 007
+
+kill timeout 300
+
+setuid <%= @user %>
+setgid <%= @group %>
+
+exec <%= @install_directory %>/kafka-<%= @version %>/bin/kafka-server-start.sh <%= @install_directory %>/kafka-<%= @version %>/config/server-<%= @n %>.properties;
