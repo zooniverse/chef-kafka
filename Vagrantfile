@@ -15,12 +15,15 @@ Vagrant.configure("2") do |config|
   config.vm.provision :chef_solo do |chef|
     chef.json = {
       java: {
-        jdk_version: 7
+        jdk_version: 6
+      },
+      kafka: {
+        number_of_brokers: 3
       }
     }
 
     chef.run_list = [
-      "recipe[java::default]",
+      "recipe[apt::default]",
       "recipe[kafka::default]"
     ]
   end

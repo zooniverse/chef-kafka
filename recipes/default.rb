@@ -6,6 +6,8 @@
 # 
 # All rights reserved - Do Not Redistribute
 
+include_recipe 'java'
+
 if node['kafka']['zookeeper_host'] == 'localhost'
   include_recipe "kafka::zookeeper"
 end
@@ -54,9 +56,9 @@ node['kafka']['number_of_brokers'].times do |n|
     group: node['kafka']['group'],
     install_directory: node['kafka']['install_directory'],
     version: node['kafka']['version'],
-    local_zoo: node['kafka']['zookeeper_host'] == 'localhost',
-    zookeeper_host: node['kafka']['zookeeper_host'],
-    zookeeper_port: node['kafka']['zookeeper_port']
+    local_zoo: node['kafka']['zookeeper_hosts'].first == 'localhost:2181',
+    zookeepers: node['kafka']['zookeeper_hosts'].join(','),
+    hostname: node['kafka']['hostname']
   }
 
   template "#{node['kafka']['install_directory']}/#{kafka_name}/config/server-#{n}.properties" do
