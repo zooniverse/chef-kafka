@@ -8,7 +8,7 @@
 
 include_recipe 'java'
 
-if node['kafka']['zookeeper_host'] == 'localhost'
+if node['kafka']['zookeeper_hosts'] == ['localhost:2181']
   include_recipe "kafka::zookeeper"
 end
 
