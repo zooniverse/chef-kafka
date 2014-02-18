@@ -12,13 +12,17 @@ Vagrant.configure("2") do |config|
   config.berkshelf.enabled = true
   config.omnibus.chef_version = :latest
 
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--memory", 4096]
+  end
+
   config.vm.provision :chef_solo do |chef|
     chef.json = {
       java: {
         jdk_version: 6
       },
       kafka: {
-        number_of_brokers: 3
+        number_of_brokers: 2
       }
     }
 
