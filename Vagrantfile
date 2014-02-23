@@ -4,8 +4,8 @@
 Vagrant.configure("2") do |config|
   config.vm.hostname = "kafka-berkshelf"
 
-  config.vm.box = "opscode_ubuntu-13.10"
-  config.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.10_chef-provisionerless.box"
+  config.vm.box = "opscode_ubuntu-12.04"
+  config.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-12.04_chef-provisionerless.box"
 
   config.vm.network :private_network, ip: "33.33.33.10"
 
