@@ -7,7 +7,6 @@
 # All rights reserved - Do Not Redistribute
 
 include_recipe 'java'
-
 if node['kafka']['zookeeper_hosts'] == ['localhost:2181']
   include_recipe "kafka::zookeeper"
 end
@@ -97,6 +96,12 @@ node['kafka']['number_of_brokers'].times do |n|
       fstype "ext4"
       action [:mount, :enable]
     end
+  end
+
+  directory "/tmp/kafka-#{n}/log" do
+    owner node['kafka']['user']
+    group node['kafka']['group']
+    mode '0755'
   end
 
   service "kafka-#{n}" do
