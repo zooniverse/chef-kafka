@@ -84,7 +84,7 @@ node['kafka']['number_of_brokers'].times do |n|
     mode '0755'
   end
 
-  if node['kafka']['devices'] do
+  if node['kafka']['devices']
     dev = node['kafka']['devices'][n]
 
     execute "mkfs" do
