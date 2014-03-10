@@ -78,7 +78,28 @@ node['kafka']['number_of_brokers'].times do |n|
     mode "0644"
   end
 
- service "kafka-#{n}" do
+  directory "/tmp/kafka-#{n}/" do
+    owner node['kafka']['user']
+    group node['kafka']['group']
+    mode '0755'
+  end
+
+  if node['kafka']['devices'] do
+    dev = node['kafka']['devices'][n]
+
+    execute "mkfs" do
+      command "mkfs -t ext4 #{dev}"
+      not_if "grep -qs /tmp/kafka-#{n} /proc/mounts"
+    end
+
+    mount "/tmp/kafka-#{n}" do
+      device dev
+      fstype "ext4"
+      action [:mount, :enable]
+    end
+  end
+
+  service "kafka-#{n}" do
     provider Chef::Provider::Service::Upstart
     supports start: true, restart: true
     if node['kafka']['zookeeper_hosts'] == ['localhost:2181']
