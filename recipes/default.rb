@@ -102,10 +102,6 @@ node['kafka']['number_of_brokers'].times do |n|
   service "kafka-#{n}" do
     provider Chef::Provider::Service::Upstart
     supports start: true, restart: true
-    if node['kafka']['zookeeper_hosts'] == ['localhost:2181']
-      action [:enable, :start]
-    else
-      action :enable
-    end
+    action [:enable, :start]
   end
 end
