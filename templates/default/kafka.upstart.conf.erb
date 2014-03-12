@@ -2,8 +2,8 @@ description "Kafka"
 
 limit nofile 32768 32768
 
-start on <% if @local_zoo %>started zookeeper<% else %>[2345]<% end %>
-stop on <% if @local_zoo %>stopped zookeeper<% else %>[!12345]<% end %>
+start on [2345]
+stop on [!2345]
 
 respawn
 respawn limit 2 5
@@ -16,3 +16,12 @@ setuid <%= @user %>
 setgid <%= @group %>
 
 exec <%= @install_directory %>/kafka-<%= @version %>/bin/kafka-server-start.sh <%= @install_directory %>/kafka-<%= @version %>/config/server-<%= @n %>.properties;
+
+post-start script
+  PID=`status kafka-<%= @n %> | egrep -oi '([0-9]+)$' | head -n1`
+  echo $PID > <%= @install_directory %>/kafka-<%= @n %>.pid
+end script
+
+post-stop script
+  rm -f <%= @install_directory %>/kafka-<%= @n %>.pid
+end script
