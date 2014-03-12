@@ -7,9 +7,6 @@
 # All rights reserved - Do Not Redistribute
 
 include_recipe 'java'
-if node['kafka']['zookeeper_hosts'] == ['localhost:2181']
-  include_recipe "kafka::zookeeper"
-end
 
 kafka_name = "kafka-#{node['kafka']['version']}"
 
