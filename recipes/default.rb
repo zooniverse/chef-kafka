@@ -8,7 +8,7 @@
 
 include_recipe 'java'
 
-kafka_name = "kafka-#{node['kafka']['version']}"
+kafka_name = "kafka_#{node['kafka']['scala_version']}-#{node['kafka']['version']}"
 
 group node['kafka']['group'] do
   action :create
@@ -18,11 +18,11 @@ user node['kafka']['user'] do
   gid node['kafka']['group']
 end
 
-remote_file ::File.join(Chef::Config[:file_cache_path], "#{kafka_name}-src.tgz") do
+remote_file ::File.join(Chef::Config[:file_cache_path], "#{kafka_name}.tgz") do
   action :create
   owner 'root'
   mode '0644'
-  source node['kafka']['src_url']
+  source node['kafka']['jar_url']
 end
 
 directory node['kafka']['install_directory'] do
@@ -31,17 +31,9 @@ directory node['kafka']['install_directory'] do
 end
 
 unless ::File.exist?("#{node['kafka']['install_directory']}/#{kafka_name}")
-  execute 'install and build kafka' do
+  execute "copy folder" do
     cwd Chef::Config[:file_cache_path]
-    command """
-      tar -zxf #{kafka_name}-src.tgz && \
-      mv #{kafka_name}-src/ #{node['kafka']['install_directory']}/#{kafka_name} && \
-      cd #{node['kafka']['install_directory']}/#{kafka_name} && \
-      ./sbt update && \
-      ./sbt package && \
-      ./sbt assembly-package-dependency && \
-      chown -R #{node['kafka']['user']}:#{node['kafka']['group']} .
-    """
+    command "tar -C '#{node['kafka']['install_directory']}' -zxf '#{kafka_name}.tgz' && chown -R '#{node['kafka']['user']}:#{node['kafka']['group']}' #{node['kafka']['install_directory']}"
   end
 end
 
@@ -52,6 +44,7 @@ node['kafka']['number_of_brokers'].times do |n|
     group: node['kafka']['group'],
     install_directory: node['kafka']['install_directory'],
     version: node['kafka']['version'],
+    scala_version: node['kafka']['scala_version'],
     local_zoo: node['kafka']['zookeeper_hosts'].first == 'localhost:2181',
     zookeepers: node['kafka']['zookeeper_hosts'].join(','),
     hostname: node['kafka']['hostname']

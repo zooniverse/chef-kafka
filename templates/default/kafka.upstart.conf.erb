@@ -15,7 +15,7 @@ kill timeout 300
 setuid <%= @user %>
 setgid <%= @group %>
 
-exec <%= @install_directory %>/kafka-<%= @version %>/bin/kafka-server-start.sh <%= @install_directory %>/kafka-<%= @version %>/config/server-<%= @n %>.properties;
+exec <%= @install_directory %>/kafka_<%= @scala_version %>-<%= @version %>/bin/kafka-server-start.sh <%= @install_directory %>/kafka_<%= @scala_version %>-<%= @version %>/config/server-<%= @n %>.properties;
 
 post-start script
   PID=`status kafka-<%= @n %> | egrep -oi '([0-9]+)$' | head -n1`
