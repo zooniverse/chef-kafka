@@ -47,7 +47,8 @@ node['kafka']['number_of_brokers'].times do |n|
     scala_version: node['kafka']['scala_version'],
     local_zoo: node['kafka']['zookeeper_hosts'].first == 'localhost:2181',
     zookeepers: node['kafka']['zookeeper_hosts'].join(','),
-    hostname: node['kafka']['hostname']
+    hostname: node['kafka']['hostname'],
+    ad_hostname: node['kafka']['ad_hostname']
   }
 
   template "#{node['kafka']['install_directory']}/#{kafka_name}/config/server-#{n}.properties" do

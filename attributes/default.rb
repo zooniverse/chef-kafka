@@ -7,3 +7,4 @@ default['kafka']['install_directory'] = "/opt/kafka"
 default['kafka']['number_of_brokers'] = 1
 default['kafka']['zookeeper_hosts'] = []
 default['kafka']['hostname'] = false
+default['kafka']['ad_hostname'] = false
