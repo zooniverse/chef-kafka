@@ -1,8 +1,8 @@
 default['kafka']['user'] =  'kafka'
 default['kafka']['group'] = 'kafka'
 default['kafka']['version'] = '0.8.1'
-default['kafka']['scala_version'] = '2.10'
-default['kafka']['jar_url'] = "http://mirror.symnds.com/software/Apache/kafka/0.8.1/kafka_2.10-0.8.1.tgz"
+default['kafka']['scala_version'] = '2.9.2'
+default['kafka']['jar_url'] = "http://mirror.symnds.com/software/Apache/kafka/0.8.1/kafka_2.9.2-0.8.1.tgz"
 default['kafka']['install_directory'] = "/opt/kafka"
 default['kafka']['number_of_brokers'] = 1
 default['kafka']['zookeeper_hosts'] = []
